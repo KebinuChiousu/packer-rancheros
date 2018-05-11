@@ -1,12 +1,19 @@
 {
+  "variables": {
+    "rancheros-version": "v1.3.0",
+    "iso-checksum": "1105cb8ca8e82fdcba17c517c742caa08135a621541d5dc319fd28a65287992d",
+    "iso-checksum-type": "sha256",
+    "ssh-username": "rancher",
+    "ssh-password": "rancher"
+  },
   "builders": [{
     "type": "virtualbox-iso",
     "guest_os_type": "Linux_64",
-    "iso_url": "https://github.com/rancher/os/releases/download/v1.3.0/rancheros.iso",
-    "iso_checksum": "1105cb8ca8e82fdcba17c517c742caa08135a621541d5dc319fd28a65287992d",
-    "iso_checksum_type": "sha256",
-    "ssh_username": "rancher",
-    "ssh_password": "rancher",
+    "iso_url": "https://github.com/rancher/os/releases/download/{{user `rancheros-version`}}/rancheros.iso",
+    "iso_checksum": "user `iso-checksum`",
+    "iso_checksum_type": "user `iso-checksum-type`",
+    "ssh_username": "{{user `ssh-username`}}",
+    "ssh_password": "{{user `ssh-password`}}",
     "boot_wait":"4s",
     "ssh_wait_timeout": "30s",
     "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
