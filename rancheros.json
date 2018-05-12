@@ -21,14 +21,5 @@
     "format":"ova",
     "guest_additions_mode":"disable"
   }],
-  "provisioners": [],
-  "post-processors": [
-    [
-      {
-          "type": "vagrant"
-        , "output": "./output/vagrant/x86_64/prod/{{user `version`}}/rancheros_{{.Provider}}.box"
-        , "vagrantfile_template": "includes/vagrantfile.tpl"
-      }
-    ]
-  ]
+  "provisioners": []
 }
