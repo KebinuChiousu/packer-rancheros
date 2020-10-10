@@ -58,6 +58,11 @@ Vagrant.configure("2") do |config|
  
     # Customize the amount of memory on the VM:
     vb.memory = "2048"
+    
+    # disable guest additions as ranchos doesn't really support it.
+    vb.check_guest_additions = false
+    vb.functional_vboxsf = false
+
   end
   #
   # View the documentation for the provider you are using for more
