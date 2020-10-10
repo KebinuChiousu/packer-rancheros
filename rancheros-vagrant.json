@@ -1,7 +1,7 @@
 {
   "variables": {
-    "rancheros-version": "v1.3.0",
-    "iso-checksum": "1105cb8ca8e82fdcba17c517c742caa08135a621541d5dc319fd28a65287992d",
+    "rancheros-version": "v1.5.6",
+    "iso-checksum": "d70520b1edd51d3f45a407fbffd820ec4b5cc4a6b7a73d822a687facd9c07e92",
     "iso-checksum-type": "sha256",
     "ssh-username": "rancher",
     "ssh-password": "rancher"
