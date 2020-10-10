@@ -3,11 +3,12 @@
     {
       "boot_command": [
         "<enter><wait>",
+        "sudo -i<enter>",
         "sudo passwd {{user `ssh-username`}}<enter><wait>",
         "{{user `ssh-password`}}<enter><wait>",
         "{{user `ssh-password`}}<enter><wait>"
       ],
-      "boot_wait": "60s",
+      "boot_wait": "45s",
       "disk_size": "8000",
       "format": "ova",
       "guest_additions_mode": "disable",
@@ -16,7 +17,7 @@
       "headless": false,
       "iso_checksum": "{{user `iso-checksum-type`}}:{{user `iso-checksum`}}",
       "iso_interface": "sata",
-      "iso_url": "https://github.com/rancher/os/releases/download/{{user `rancheros-version`}}/rancheros.iso",
+      "iso_url": "https://github.com/rancher/os/releases/download/{{user `version`}}/rancheros.iso",
       "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
       "ssh_password": "{{user `ssh-password`}}",
       "ssh_timeout": "4s",
@@ -27,48 +28,65 @@
           "modifyvm",
           "{{.Name}}",
           "--memory",
-          "4096"
+          "2048",
+          "--rtcuseutc",
+          "on",
+          "--pae",
+          "off"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--boot1",
+          "dvd",
+          "--boot2",
+          "disk"
+        ],
+        [
+          "storagectl",
+          "{{.Name}}",
+          "--name",
+          "SATA Controller",
+          "--portcount",
+          "2"
         ],
         [
           "modifyvm",
           "{{.Name}}",
           "--nic1",
           "nat"
-        ],
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--natpf1",
-          "ssh,tcp,,2222,,22"
         ]
-      ]
+      ],
+      "vm_name": "rancheros-packer"
     }
   ],
   "post-processors": [
     [
       {
-        "output": "./output/vagrant/x86_64/prod/{{user `version`}}/rancheros_{{.Provider}}.box",
-        "type": "vagrant",
-        "vagrantfile_template": "includes/vagrantfile.tpl"
+        "output": "./output/rancheros-{{.Provider}}.box",
+        "type": "vagrant"
       }
     ]
   ],
   "provisioners": [
-    {
-      "destination": "/tmp/vagrant.yml",
-      "source": "cloud-config/vagrant.yml",
-      "type": "file"
-    },
-    {
-      "destination": "build.sh",
-      "source": "scripts/build.sh",
-      "type": "file"
-    }
+        {
+            "type":"file",
+            "source": "cloud-config.yml",
+            "destination": "/tmp/cloud-config.yml"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "cat /tmp/cloud-config.yml",
+                "ifconfig",
+                "sudo ros install -d /dev/sda -f -c /tmp/cloud-config.yml -i rancher/os:v1.5.6 --no-reboot"
+            ]
+        }
   ],
   "variables": {
     "iso-checksum": "d70520b1edd51d3f45a407fbffd820ec4b5cc4a6b7a73d822a687facd9c07e92",
     "iso-checksum-type": "sha256",
-    "rancheros-version": "v1.5.6",
+    "version": "v1.5.6",
     "ssh-password": "rancher",
     "ssh-username": "rancher"
   }
